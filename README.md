@@ -70,7 +70,5 @@ Job seekers often spend significant time manually modifying resumes for differen
 **Shraddhanjali Sahoo**
 
 BITS Pilani, Hyderabad Campus
-B.E. Electronics & Communication Engineering
-M.Sc. Economics
 
 GitHub: https://github.com/ShraddhanjaliSahoo
