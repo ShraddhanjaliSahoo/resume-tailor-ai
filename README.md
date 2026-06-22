@@ -1,73 +1,76 @@
-# React + TypeScript + Vite
+# ResumeTailor AI
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+ResumeTailor AI is an AI-powered web application that automatically customizes resumes based on job descriptions, helping candidates improve ATS compatibility and eliminate repetitive manual resume editing.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+* Upload resumes in PDF format
+* AI-powered resume parsing and structuring
+* Job description analysis
+* ATS score estimation before and after optimization
+* Keyword gap analysis
+* Resume tailoring based on target roles
+* Side-by-side resume comparison
+* Resume history dashboard
+* Professional PDF export
+* Recruiter insights and recommendations
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Frontend
 
-## Expanding the ESLint configuration
+* React
+* TypeScript
+* Tailwind CSS
+* Vite
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### AI & Processing
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+* Google Gemini API
+* PDF.js
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### Storage
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+* Firebase
+* Browser Local Storage
+
+## How It Works
+
+1. Upload your master resume.
+2. Paste a target job description.
+3. AI analyzes both documents.
+4. ResumeTailor AI identifies keyword gaps and ATS optimization opportunities.
+5. The resume is tailored while preserving factual accuracy.
+6. View ATS score improvements and download the optimized version.
+
+## Installation
+
+```bash
+git clone https://github.com/ShraddhanjaliSahoo/resume-tailor-ai.git
+cd resume-tailor-ai
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Future Enhancements
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+* Multiple resume templates
+* One-click resume generation
+* AI-generated cover letters
+* Application tracking dashboard
+* LinkedIn profile import
+* Multi-role resume management
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Project Motivation
+
+Job seekers often spend significant time manually modifying resumes for different job descriptions. ResumeTailor AI streamlines this process by generating role-specific resume versions within seconds while maintaining accuracy and improving ATS compatibility.
+
+## Author
+
+**Shraddhanjali Sahoo**
+
+BITS Pilani, Hyderabad Campus
+B.E. Electronics & Communication Engineering
+M.Sc. Economics
+
+GitHub: https://github.com/ShraddhanjaliSahoo
