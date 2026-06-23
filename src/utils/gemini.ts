@@ -100,66 +100,97 @@ export interface TailoringResult {
  * Parse raw extracted PDF text into a structured MasterResume JSON object
  */
 export async function parseResumeWithGemini(rawText: string): Promise<MasterResume> {
+  console.log("Resume length:", rawText.length);
+
   const apiKey = getGeminiApiKey();
   if (!apiKey) {
     throw new Error('Gemini API key is not configured. Please add it in the settings.');
   }
 
   const genAI = new GoogleGenerativeAI(apiKey);
+
   const model = genAI.getGenerativeModel({
-    model: 'gemini-1.5-flash',
-    generationConfig: { responseMimeType: 'application/json' },
+    model: 'gemini-2.5-flash',
+    generationConfig: {
+      responseMimeType: 'application/json',
+      temperature: 0.1,
+      maxOutputTokens: 8192,
+    },
   });
 
   const prompt = `
-    You are an expert resume parser. Analyze the raw text of a resume and extract the contents into a structured JSON format matching this TypeScript interface:
+Extract information from this resume and return ONLY valid JSON.
 
-    interface MasterResume {
-      personalInfo: {
-        fullName: string;
-        email: string;
-        phone: string;
-        location: string;
-        links: string[];
-      };
-      summary: string;
-      skills: string[];
-      experience: {
-        role: string;
-        company: string;
-        location: string;
-        duration: string;
-        bullets: string[];
-      }[];
-      projects: {
-        title: string;
-        description: string;
-        technologies: string[];
-        bullets: string[];
-      }[];
-      education: {
-        degree: string;
-        institution: string;
-        location: string;
-        duration: string;
-      }[];
-    }
+{
+  "personalInfo": {
+    "fullName": "",
+    "email": "",
+    "phone": "",
+    "location": "",
+    "links": []
+  },
+  "summary": "",
+  "skills": [],
+  "experience": [],
+  "projects": [],
+  "education": []
+}
 
-    Raw Resume Text:
-    """
-    ${rawText}
-    """
-
-    Ensure all fields are fully populated based on the raw text. Do not invent any details. If a field (like summary) is missing, draft a brief professional summary based on their skills and experiences.
-  `;
+Resume:
+${rawText.slice(0, 2000)}
+`;
 
   try {
-    const result = await model.generateContent(prompt);
+    let result;
+
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      try {
+        result = await model.generateContent(prompt);
+        break;
+      } catch (err: any) {
+        const msg = String(err);
+
+        if ((msg.includes("503") || msg.includes("429")) && attempt < 3) {
+          console.log(`Retrying Gemini... attempt ${attempt}`);
+          await new Promise(resolve => setTimeout(resolve, 5000));
+          continue;
+        }
+
+        throw err;
+      }
+    }
+
     const responseText = result.response.text();
-    return JSON.parse(responseText) as MasterResume;
-  } catch (error) {
+
+    console.log("Gemini response:", responseText);
+
+    const cleaned = responseText
+      .replace(/```json/g, '')
+      .replace(/```/g, '')
+      .trim();
+
+    return JSON.parse(cleaned) as MasterResume;
+
+  } catch (error: any) {
     console.error('Failed to parse resume with Gemini:', error);
-    throw new Error('AI parser failed to structure the resume. Please check your API key or try again.');
+
+    const errorText = String(error);
+
+    if (errorText.includes('429')) {
+      throw new Error(
+        'Gemini quota exceeded. Please wait 1 minute and try again.'
+      );
+    }
+
+    if (errorText.includes('503')) {
+      throw new Error(
+        'Gemini is experiencing high demand. Please try again in a few minutes.'
+      );
+    }
+
+    throw new Error(
+      'Failed to process resume. Check console for detailed error information.'
+    );
   }
 }
 
@@ -178,7 +209,7 @@ export async function tailorResumeWithGemini(
 
   const genAI = new GoogleGenerativeAI(apiKey);
   const model = genAI.getGenerativeModel({
-    model: 'gemini-1.5-flash',
+    model: 'gemini-2.5-flash',
     generationConfig: { responseMimeType: 'application/json' },
   });
 
